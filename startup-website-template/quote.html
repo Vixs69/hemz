@@ -124,9 +124,6 @@
             <div class="row py-5">
                 <div class="col-12 pt-lg-5 mt-lg-5 text-center">
                     <h1 class="display-4 text-white animated zoomIn">Richiedi demo gratuita</h1>
-                    <a href="" class="h5 text-white">Home</a>
-                    <i class="far fa-circle text-white px-2"></i>
-                    <a href="" class="h5 text-white">Richiedi demo gratuita</a>
                 </div>
             </div>
         </div>
@@ -188,170 +185,167 @@
                 </div>
                 
               </div>
-  
-              <!-- SEZIONE A DESTRA (FORM "RICHIEDI UNA DEMO") -->
-              <div class="col-lg-5 offset-lg-1">
-                  <!-- Titolo posizionato sopra la form -->
-                  <h2 class="mb-4 text-center">Richiedi una Demo</h2>
-                  <div class="bg-primary rounded h-100 d-flex align-items-center p-5 wow zoomIn" data-wow-delay="0.9s">
-                      <form id="demoRequestForm" class="w-100">
-                          <!-- Nome Utente -->
-                          <div class="mb-3">
-                              <label for="userName" class="form-label text-white">Nome</label>
-                              <input type="text" class="form-control bg-light border-0" id="userName" placeholder="Inserisci il tuo nome" required>
-                          </div>
-  
-                          <!-- Selezione Servizio -->
-                          <div class="mb-3">
-                              <label for="serviceSelect" class="form-label text-white">Seleziona il Servizio</label>
-                              <select class="form-select bg-light border-0" id="serviceSelect" required>
-                                  <option value="" disabled selected>Seleziona un servizio</option>
-                                  <option value="Chatbot IA">Chatbot IA</option>
-                                  <option value="Agenti IA">Agenti IA</option>
-                                  <option value="Applicazione Web">Applicazioni web</option>
-                                  <option value="Assistenza Tecnica Chatbot">Assistenza tecnica chatbot</option>
-                                  <option value="Formazione Dipendenti">Formazione dipendenti</option>
-                              </select>
-                          </div>
-  
-                          <!-- Messaggio dell'Utente -->
-                          <div class="mb-3">
-                              <label for="userMessage" class="form-label text-white">Messaggio</label>
-                              <textarea class="form-control bg-light border-0" id="userMessage" rows="3" placeholder="Scrivi un messaggio opzionale"></textarea>
-                          </div>
-  
-                          <!-- Bottone per inviare la mail -->
-                          <div class="col-12">
-                              <button type="button" class="btn btn-dark w-100 py-3" onclick="sendEmail()">Richiedi una Demo</button>
-                          </div>
-                      </form>
-                  </div>
-              </div>
+
+              <!-- Form per la richiesta demo -->
+<div class="col-lg-5 offset-lg-1">
+  <!-- Titolo sopra il form -->
+  <h2 class="mb-4 text-center">Richiedi una Demo</h2>
+  <div class="bg-primary rounded h-100 d-flex align-items-center p-5 wow zoomIn" data-wow-delay="0.9s">
+      <form id="demoRequestForm" class="w-100">
+          <!-- Nome Utente -->
+          <div class="mb-3">
+              <label for="userName" class="form-label text-white">Nome</label>
+              <input type="text" class="form-control bg-light border-0" id="userName" placeholder="Inserisci il tuo nome" required>
           </div>
-      </div>
+
+          <!-- Selezione Servizio -->
+          <div class="mb-3">
+              <label for="serviceSelect" class="form-label text-white">Seleziona il Servizio</label>
+              <select class="form-select bg-light border-0" id="serviceSelect" required>
+                  <option value="" disabled selected>Seleziona un servizio</option>
+                  <option value="Chatbot IA">Chatbot IA</option>
+                  <option value="Agenti IA">Agenti IA</option>
+                  <option value="Applicazione Web">Applicazioni web</option>
+                  <option value="Assistenza Tecnica Chatbot">Assistenza tecnica chatbot</option>
+                  <option value="Formazione Dipendenti">Formazione dipendenti</option>
+              </select>
+          </div>
+
+          <!-- Messaggio dell'Utente -->
+          <div class="mb-3">
+              <label for="userMessage" class="form-label text-white">Messaggio</label>
+              <textarea class="form-control bg-light border-0" id="userMessage" rows="3" placeholder="Scrivi un messaggio opzionale"></textarea>
+          </div>
+
+          <!-- Bottone per inviare la mail -->
+          <div class="col-12">
+              <button type="button" class="btn btn-dark w-100 py-3" id="sendButton">Richiedi una Demo</button>
+          </div>
+
+          <!-- Messaggio di conferma dopo invio -->
+          <div id="successMessage" style="display:none; color: green; text-align: center; margin-top: 10px;">
+              ✅ Richiesta inviata con successo!
+          </div>
+      </form>
   </div>
-  
-  <script>
+</div>
+
+<!-- Libreria EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+  (function(){
+      emailjs.init("KDEyHpmmvIEdmgZw1"); // Sostituisci con la tua Public Key di EmailJS
+  })();
+
+  document.getElementById("sendButton").addEventListener("click", function() {
+      sendEmail();
+  });
+
   function sendEmail() {
       let userName = document.getElementById("userName").value.trim();
       let selectedService = document.getElementById("serviceSelect").value;
       let userMessage = document.getElementById("userMessage").value.trim();
-  
+
       if (!userName || !selectedService) {
           alert("Per favore, compila tutti i campi obbligatori.");
           return;
       }
-  
-      let subject = `Richiesta demo per ${selectedService}`;
-      let body = `${userName} chiede di avere una demo per "${selectedService}". `;
-      
-      if (userMessage) {
-          body += `L'utente ha aggiunto: "${userMessage}".`;
-      }
-  
-      let gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=info@hemz.eu&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.open(gmailLink, '_blank');
+
+      let templateParams = {
+          user_name: userName,
+          selected_service: selectedService,
+          user_message: userMessage
+      };
+
+      emailjs.send("service_0x2mfyx", "template_93q3kxt", templateParams)
+          .then(function(response) {
+              console.log("Email inviata con successo!", response.status, response.text);
+              document.getElementById("demoRequestForm").reset(); // Resetta il form
+              document.getElementById("successMessage").style.display = "block"; // Mostra il messaggio di successo
+          }, function(error) {
+              console.log("Errore nell'invio dell'email:", error);
+              alert("Si è verificato un errore nell'invio della richiesta.");
+          });
   }
-  </script>
+</script>
+
+          </div>
+      </div>
+    </div>            
   
-<!-- ORIGINALE Quote Start -->
-    <!-- <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container py-5">
-          <div class="row g-5">
-            <div class="col-lg-7">
-              <div class="section-title position-relative pb-3 mb-5">
-                <h5 class="fw-bold text-primary text-uppercase">Richiedi una Demo</h5>
-                <h1 class="mb-0">Hai domande o vuoi scoprire di più sulle nostre soluzioni AI?</h1>
-              </div>
-              <div class="row gx-3">
-                <div class="col-sm-6 wow zoomIn" data-wow-delay="0.2s">
-                  <h5 class="mb-4"><i class="fa fa-reply text-primary me-3"></i>Risposta in 24 ore</h5>
-                </div>
-                <div class="col-sm-6 wow zoomIn" data-wow-delay="0.4s">
-                  <h5 class="mb-4"><i class="fa fa-phone-alt text-primary me-3"></i>Supporto Telefonico 24/7</h5>
-                </div>
-              </div>
-              <p class="mb-4">Contattaci per una demo gratuita e scopri come i nostri agenti AI possono trasformare il tuo business.</p>
-              <div class="d-flex align-items-center mt-2 wow zoomIn" data-wow-delay="0.6s">
-                <div class="bg-primary d-flex align-items-center justify-content-center rounded" style="width: 60px; height: 60px;">
-                  <i class="fa fa-phone-alt text-white"></i>
-                </div>
-                <div class="ps-4">
-                  <h5 class="mb-2">Contattaci per qualsiasi informazione</h5>
-                  <h4 class="text-primary mb-0">+39 342 507 0077</h4>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-5">
+              <!-- SEZIONE A DESTRA (FORM "RICHIEDI UNA DEMO") -->
+             <!--  <div class="col-lg-5 offset-lg-1">
+                 Titolo posizionato sopra la form
+                <h2 class="mb-4 text-center">Richiedi una Demo</h2>
                 <div class="bg-primary rounded h-100 d-flex align-items-center p-5 wow zoomIn" data-wow-delay="0.9s">
-                    <form id="demoRequestForm">
-                        Nome Utente
+                    <form id="demoRequestForm" class="w-100" onsubmit="sendEmail(event)">
+                         Nome Utente 
                         <div class="mb-3">
                             <label for="userName" class="form-label text-white">Nome</label>
                             <input type="text" class="form-control bg-light border-0" id="userName" placeholder="Inserisci il tuo nome" required>
                         </div>
             
-                        Selezione Servizio
+                        Selezione Servizio 
                         <div class="mb-3">
                             <label for="serviceSelect" class="form-label text-white">Seleziona il Servizio</label>
                             <select class="form-select bg-light border-0" id="serviceSelect" required>
                                 <option value="" disabled selected>Seleziona un servizio</option>
                                 <option value="Chatbot IA">Chatbot IA</option>
-                                <option value="Applicazione Web">Applicazione Web</option>
-                                <option value="Assistenza Tecnica Chatbot">Assistenza Tecnica Chatbot</option>
                                 <option value="Agenti IA">Agenti IA</option>
-                                <option value="Formazione Dipendenti">Formazione Dipendenti</option>
+                                <option value="Applicazione Web">Applicazioni web</option>
+                                <option value="Assistenza Tecnica Chatbot">Assistenza tecnica chatbot</option>
+                                <option value="Formazione Dipendenti">Formazione dipendenti</option>
                             </select>
                         </div>
             
-                        Messaggio dell'Utente
+                        Messaggio dell'Utente 
                         <div class="mb-3">
                             <label for="userMessage" class="form-label text-white">Messaggio</label>
                             <textarea class="form-control bg-light border-0" id="userMessage" rows="3" placeholder="Scrivi un messaggio opzionale"></textarea>
                         </div>
             
-                        Bottone per inviare la mail
+                      Bottone per inviare la mail 
                         <div class="col-12">
-                            <button type="button" class="btn btn-dark w-100 py-3" onclick="sendEmail()">Richiedi una Demo</button>
+                            <button type="submit" class="btn btn-dark w-100 py-3">Richiedi una Demo</button>
                         </div>
+            
+                        Messaggio di conferma 
+                        <div id="confirmationMessage" class="text-white text-center mt-3" style="display: none;">Richiesta inviata!</div>
                     </form>
                 </div>
             </div>
             
             <script>
-            function sendEmail() {
-                // Prendere i valori inseriti dall'utente
+            function sendEmail(event) {
+                event.preventDefault(); // Evita il ricaricamento della pagina
+            
                 let userName = document.getElementById("userName").value.trim();
                 let selectedService = document.getElementById("serviceSelect").value;
                 let userMessage = document.getElementById("userMessage").value.trim();
             
-                // Validazione: assicurarsi che l'utente abbia compilato i campi richiesti
                 if (!userName || !selectedService) {
                     alert("Per favore, compila tutti i campi obbligatori.");
                     return;
                 }
             
-                // Creazione dell'oggetto della mail
-                let subject = `Richiesta demo per "${selectedService}"`;
-            
-                // Creazione del corpo della mail
-                let body = `${userName} chiede di avere una demo per "${selectedService}". `;
+                let subject = `Richiesta demo per ${selectedService}`;
+                let body = `${userName} chiede di avere una demo per "${selectedService}".\n\n`;
                 if (userMessage) {
                     body += `L'utente ha aggiunto: "${userMessage}".`;
                 }
             
-                // Creazione del link per aprire Gmail nel browser
-                let gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=vicario.andrea20@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            
-                // Aprire Gmail in una nuova finestra
+                let gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=andrivica19@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                 window.open(gmailLink, '_blank');
+            
+                // Mostra il messaggio di conferma
+                document.getElementById("confirmationMessage").style.display = "block";
+                
+                // Resetta il form dopo l'invio
+                document.getElementById("demoRequestForm").reset();
             }
-            </script>
-          </div>
-        </div>
-    </div> -->
-<!-- Originiale Quote End -->
-
+            </script> -->
+            
+  
 
     <!-- Vendor Start -->
                           <!-- <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
